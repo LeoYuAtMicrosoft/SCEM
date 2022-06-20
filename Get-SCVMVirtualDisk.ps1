@@ -146,7 +146,7 @@ $report  |out-file -FilePath C:\Windows\temp\report.html
 
 write-host "open the report folder"
 
-start-explorer "C:\Windows\temp\"
+start-process explorer "C:\Windows\temp\"
 
 # Send Email
 #Write-Verbose "Sending Report"
