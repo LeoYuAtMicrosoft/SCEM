@@ -1,0 +1,4 @@
+#SCVMM 2019
+
+UR4: https://support.microsoft.com/en-us/topic/update-rollup-4-for-system-center-2019-virtual-machine-manager-045605ba-7de1-4569-bad2-9f7c6ccc42c4
+release date : 20th-Jun-2022
