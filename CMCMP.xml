@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?><ManagementPack ContentReadable="true" SchemaVersion="2.0" OriginalSchemaVersion="1.1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <Manifest>
+    <Identity>
+      <ID>CMCMP</ID>
+      <Version>1.0.0.0</Version>
+    </Identity>
+    <Name>CMCMP02</Name>
+    <References>
+      <Reference Alias="PowerShellMonitoring">
+        <ID>Community.PowerShellMonitoring</ID>
+        <Version>1.0.0.21</Version>
+        <PublicKeyToken>1f2892a40cfc5045</PublicKeyToken>
+      </Reference>
+      <Reference Alias="MicrosoftWindowsLibrary7585011">
+        <ID>Microsoft.Windows.Library</ID>
+        <Version>7.5.8501.1</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="SystemLibrary7585011">
+        <ID>System.Library</ID>
+        <Version>7.5.8501.1</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="SystemCenter">
+        <ID>Microsoft.SystemCenter.Library</ID>
+        <Version>10.22.10118.0</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+      <Reference Alias="Health">
+        <ID>System.Health.Library</ID>
+        <Version>7.0.8447.6</Version>
+        <PublicKeyToken>31bf3856ad364e35</PublicKeyToken>
+      </Reference>
+    </References>
+  </Manifest>
+  <Monitoring>
+    <Monitors>
+      <UnitMonitor ID="UIGeneratedMonitor0f408bfb292e4fd48ca53ae64928eb8f" Accessibility="Public" Enabled="true" Target="MicrosoftWindowsLibrary7585011!Microsoft.Windows.OperatingSystem" ParentMonitorID="Health!System.Health.AvailabilityState" Remotable="true" Priority="Normal" TypeID="PowerShellMonitoring!Community.PowerShellMonitoring.UnitMonitors.PowerShellTwoState" ConfirmDelivery="false">
+        <Category>Custom</Category>
+        <AlertSettings AlertMessage="UIGeneratedMonitor0f408bfb292e4fd48ca53ae64928eb8f_AlertMessageResourceID">
+          <AlertOnState>Warning</AlertOnState>
+          <AutoResolve>true</AutoResolve>
+          <AlertPriority>Normal</AlertPriority>
+          <AlertSeverity>Error</AlertSeverity>
+          <AlertParameters>
+            <AlertParameter1>$Target/Host/Property[Type="MicrosoftWindowsLibrary7585011!Microsoft.Windows.Computer"]/DNSName$</AlertParameter1>
+            <AlertParameter2>$Data/Context/Property[@Name='BadNetAdapterName']$</AlertParameter2>
+          </AlertParameters>
+        </AlertSettings>
+        <OperationalStates>
+          <OperationalState ID="UIGeneratedOpStateId941cdc654977471ebdd5a72fcaf63f16" MonitorTypeStateID="Healthy" HealthState="Success" />
+          <OperationalState ID="UIGeneratedOpStateIdb4ca5b9dc0a8403e903b914b55356e16" MonitorTypeStateID="Unhealthy" HealthState="Warning" />
+        </OperationalStates>
+        <Configuration>
+          <IntervalSeconds>300</IntervalSeconds>
+          <SyncTime />
+          <ScriptName>CustomNetworkAdapterHealthChecking.ps1</ScriptName>
+          <ScriptBody>$NetAdapters = GET-NETADAPTER -ErrorAction SilentlyContinue |? {$_.name -notlike "Bluetooth*"} | select name, status, MediaConnectionState, MediaConnectState
+
+$api = New-Object -ComObject 'MOM.ScriptAPI'
+$PropertyBag=$api.CreatePropertyBag()
+
+
+if ($NetAdapters.MediaConnectionState -notcontains "Disconnected" )    {
+
+
+Eventcreate /L "Operations Manager" /SO NetworkAdapter /ID 123 /T Information /D "All Network adapters are in health state"
+
+$PropertyBag.AddValue("State","Good") 
+
+write-host 'all good'
+ } else {  
+
+
+
+$BadNetAdapterName = (GET-NETADAPTER -ErrorAction SilentlyContinue  | ? { $_.MediaConnectionState -eq 'Disconnected' -and $_.name -notlike "Bluetooth*" } ).Name
+
+Eventcreate /L "Operations Manager" /SO NetworkAdapter /ID 125 /T Error /D "$NetAdapters Below Network adapters are not health. Please check. :$BadNetAdapterName "
+
+$PropertyBag.AddValue("State","Bad") 
+$PropertyBag.AddValue("BadNetAdapterName",$BadNetAdapterName)
+
+#write-host $BadNetAdapterName 
+
+
+} 
+
+             
+# Send output to SCOM
+$api.return($PropertyBag) | out-file c:\Windows\temp\test.txt
+$PropertyBag</ScriptBody>
+          <Arguments />
+          <TimeoutSeconds>180</TimeoutSeconds>
+          <UnhealthyExpression>
+            <SimpleExpression>
+              <ValueExpression>
+                <XPathQuery>Property[@Name='State']</XPathQuery>
+              </ValueExpression>
+              <Operator>Equal</Operator>
+              <ValueExpression>
+                <Value Type="String">Bad</Value>
+              </ValueExpression>
+            </SimpleExpression>
+          </UnhealthyExpression>
+          <HealthyExpression>
+            <SimpleExpression>
+              <ValueExpression>
+                <XPathQuery>Property[@Name='State']</XPathQuery>
+              </ValueExpression>
+              <Operator>Equal</Operator>
+              <ValueExpression>
+                <Value Type="String">Good</Value>
+              </ValueExpression>
+            </SimpleExpression>
+          </HealthyExpression>
+        </Configuration>
+      </UnitMonitor>
+    </Monitors>
+  </Monitoring>
+  <Presentation>
+    <Folders>
+      <Folder ID="Folder_1167c282c79948549ce7f2a0aec3a352" Accessibility="Public" ParentFolder="SystemCenter!Microsoft.SystemCenter.Monitoring.ViewFolder.Root" />
+    </Folders>
+    <StringResources>
+      <StringResource ID="UIGeneratedMonitor0f408bfb292e4fd48ca53ae64928eb8f_AlertMessageResourceID" />
+    </StringResources>
+  </Presentation>
+  <LanguagePacks>
+    <LanguagePack ID="ENU" IsDefault="false">
+      <DisplayStrings>
+        <DisplayString ElementID="CMCMP">
+          <Name>CMCMP02</Name>
+          <Description>This MP saved the customized monitor for network adapter connection health state checking.</Description>
+        </DisplayString>
+        <DisplayString ElementID="Folder_1167c282c79948549ce7f2a0aec3a352">
+          <Name>CMCMP02</Name>
+        </DisplayString>
+        <DisplayString ElementID="UIGeneratedMonitor0f408bfb292e4fd48ca53ae64928eb8f">
+          <Name>CustomNetworkAdapterChecking</Name>
+          <Description>This is a customized monitor developed for CMC by Microsoft. This is considered as a workaround for the default monitor 'Network adapter connection health'.</Description>
+        </DisplayString>
+        <DisplayString ElementID="UIGeneratedMonitor0f408bfb292e4fd48ca53ae64928eb8f" SubElementID="UIGeneratedOpStateIdb4ca5b9dc0a8403e903b914b55356e16">
+          <Name>Unhealthy</Name>
+        </DisplayString>
+        <DisplayString ElementID="UIGeneratedMonitor0f408bfb292e4fd48ca53ae64928eb8f" SubElementID="UIGeneratedOpStateId941cdc654977471ebdd5a72fcaf63f16">
+          <Name>Healthy</Name>
+        </DisplayString>
+        <DisplayString ElementID="UIGeneratedMonitor0f408bfb292e4fd48ca53ae64928eb8f_AlertMessageResourceID">
+          <Name>There is network adapter disconnected on this computer. Please confirm if this is expected or not</Name>
+          <Description>There is network adapter disconnected on this computer. Please confirm if this is expected or not.
+
+Please login to the server to check.
+
+Server name: {0}
+
+Problematic NetworkAdapterName: {1}</Description>
+        </DisplayString>
+      </DisplayStrings>
+    </LanguagePack>
+  </LanguagePacks>
+</ManagementPack>
