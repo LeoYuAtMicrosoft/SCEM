@@ -1,0 +1,3 @@
+#SQL server 2008 MP out of support.
+
+https://techcommunity.microsoft.com/t5/sql-server-blog/released-version-agnostic-management-pack-for-sql-server-7-0-15/ba-p/479573
