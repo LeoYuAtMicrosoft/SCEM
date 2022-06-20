@@ -138,14 +138,24 @@ $report = $report + "<h4><B>Total Disk Space Used for All VMs in (GB) is $({{0:N
 Write-Verbose "Finalizing Report"
 $report = $report + "</body></html>"
 
+#Save the report to C:\Windows\temp\report.html
+
+write-host "exporting the result to C:\Windows\temp\report.html"
+
+$report  |out-file -FilePath C:\Windows\temp\report.html
+
+write-host "open the report folder"
+
+start-explorer "C:\Windows\temp\"
+
 # Send Email
-Write-Verbose "Sending Report"
-$email = new-object Net.Mail.MailMessage
-$email.Priority = [System.Net.Mail.MailPriority]::High
-$email.Subject = "Virtual Machines and Virtual Hard Disks Report: $($filedate)"
-$email.From = new-object Net.Mail.MailAddress($FromEmail)
-$email.IsBodyHtml = $true
-$email.Body =  $report
-$email.To.Add($ToEmail1)
-$email.To.Add($ToEmail2)
-$smtp.Send($email)
+#Write-Verbose "Sending Report"
+#$email = new-object Net.Mail.MailMessage
+#$email.Priority = [System.Net.Mail.MailPriority]::High
+#$email.Subject = "Virtual Machines and Virtual Hard Disks Report: $($filedate)"
+#$email.From = new-object Net.Mail.MailAddress($FromEmail)
+#$email.IsBodyHtml = $true
+#$email.Body =  $report
+#$email.To.Add($ToEmail1)
+#$email.To.Add($ToEmail2)
+#$smtp.Send($email)
