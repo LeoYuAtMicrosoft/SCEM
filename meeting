@@ -1,1 +1,18 @@
 https://teams.microsoft.com/l/meetup-join/19%3ameeting_YTdhMWE5ZTYtOGE2Yi00MWNkLWI1NjMtOTAyMWQ1NzZlZDM4%40thread.v2/0?context=%7b%22Tid%22%3a%2272f988bf-86f1-41af-91ab-2d7cd011db47%22%2c%22Oid%22%3a%2225321794-2a96-45a5-b314-e83a9c906e7c%22%7d
+
+
+执行下面的命令，输入账号和密码，该账号需要是VMM服务器的本地管理员。
+ 
+
+$credential = get-credential
+
+ 
+
+执行下面的命令。请将abc.com修改成VMM服务器的FQDN已经library服务器的FQDN
+ 
+
+Get-SCVMMManagedComputer -ComputerName "abc.com" | Register-SCVMMManagedComputer  -Credential $credential
+
+ 
+
+再次执行创建模板，确认问题是否得到解决。
