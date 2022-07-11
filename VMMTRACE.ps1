@@ -114,10 +114,10 @@ Write-Host `n"To zip the whole C:\VMMLOGS\ folder to desktop and name it as $Ser
 sleep 2
 
 
-Compress-archive -LiteralPath c:\vmmlogs  -DestinationPath  c:\windows\temp\$ServerName.zip -force   
+Compress-archive -LiteralPath c:\vmmlogs  -DestinationPath  $desktoppath\$ServerName_$nowtime.ZIP -force   
 
 
-$desktoppath = ~\desktop
+$desktoppath = cd ~\desktop ;pwd 
 write-host `n"log collection done. Please share the $desktoppath\$ServerName_$nowtime.ZIP with engineer"   -ForegroundColor Yellow
 
 
