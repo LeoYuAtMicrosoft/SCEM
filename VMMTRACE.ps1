@@ -107,11 +107,11 @@ Copy-Item "C:\Windows\System32\winevt\Logs\Microsoft-VirtualMachineManager-Serve
 
 $ServerName = $env:computername
 
-$nowtime = Get-Date -Format "yyyy-MM-dd--HH:mm:ss"
+$nowtime = Get-Date -Format "yyyy-MM-dd--HH-mm-ss"
 
 $filename = $Servername + '_' + $nowtime
 
-Write-Host `n"To zip the whole C:\VMMLOGS\ folder to desktop and name it as $ServerName_$nowtime.ZIP"     -ForegroundColor Yellow
+Write-Host `n"To zip the whole C:\VMMLOGS\ folder to desktop and name it as $filename.ZIP"     -ForegroundColor Yellow
 
 sleep 2
 
