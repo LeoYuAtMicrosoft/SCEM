@@ -105,7 +105,7 @@ Copy-Item "C:\Windows\System32\winevt\Logs\Microsoft-VirtualMachineManager-Serve
 
 
 
-$ServerName = hostname
+$ServerName = $env:computername
 
 $nowtime = Get-Date -Format "yyyy-MM-dd--HH:mm:ss"
 
@@ -114,11 +114,11 @@ Write-Host `n"To zip the whole C:\VMMLOGS\ folder to desktop and name it as $Ser
 sleep 2
 
 
-Compress-archive -LiteralPath c:\vmmlogs  -DestinationPath  $desktoppath\$ServerName_$nowtime.ZIP -force   
+Compress-archive -LiteralPath c:\vmmlogs  -DestinationPath  C:\WINDOWS\TEMP\$ServerName_$nowtime.ZIP -force   
 
 
-$desktoppath = cd ~\desktop ;pwd 
-write-host `n"log collection done. Please share the $desktoppath\$ServerName_$nowtime.ZIP with engineer"   -ForegroundColor Yellow
+
+write-host `n"log collection done. Please share the C:\VMMLOGS\$ServerName_$nowtime.ZIP with engineer"   -ForegroundColor Yellow
 
 
 sleep 2
