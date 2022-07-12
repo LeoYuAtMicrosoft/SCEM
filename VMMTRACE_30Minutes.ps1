@@ -52,7 +52,7 @@ logman start vmm
 
 Write-Host `n"To Start WINRM trace"  -ForegroundColor Magenta
 
-start explorer c:\VMMlogs
+#start explorer c:\VMMlogs
 
 
 sleep 2
@@ -127,7 +127,7 @@ write-host `n"log collection done. Please share the C:\VMMLOGS\$filename.ZIP wit
 
 sleep 2
 
-start-process explorer C:\WINDOWS\TEMP
+#start-process explorer C:\WINDOWS\TEMP
 
 
 
