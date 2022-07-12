@@ -109,16 +109,18 @@ $ServerName = $env:computername
 
 $nowtime = Get-Date -Format "yyyy-MM-dd--HH:mm:ss"
 
+$filename = $Servername + '_' + $nowtime
+
 Write-Host `n"To zip the whole C:\VMMLOGS\ folder to desktop and name it as $ServerName_$nowtime.ZIP"     -ForegroundColor Yellow
 
 sleep 2
 
 
-Compress-archive -LiteralPath c:\vmmlogs  -DestinationPath  C:\WINDOWS\TEMP\$ServerName_$nowtime.ZIP -force   
+Compress-archive -LiteralPath c:\vmmlogs  -DestinationPath  C:\WINDOWS\TEMP\$filename.ZIP -force   
 
 
 
-write-host `n"log collection done. Please share the C:\VMMLOGS\$ServerName_$nowtime.ZIP with engineer"   -ForegroundColor Yellow
+write-host `n"log collection done. Please share the C:\VMMLOGS\$filename.ZIP with engineer"   -ForegroundColor Yellow
 
 
 sleep 2
